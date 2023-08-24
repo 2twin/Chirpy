@@ -7,6 +7,11 @@ import (
 	"sync"
 )
 
+type Chirp struct {
+	Body string `json:"body"`
+	Id   int    `json:"id"`
+}
+
 type DB struct {
 	path string
 	mu  *sync.RWMutex
