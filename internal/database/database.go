@@ -9,7 +9,7 @@ import (
 
 type DB struct {
 	path string
-	mu  *sync.RWMutex
+	mu   *sync.RWMutex
 }
 
 type DBStructure struct {
@@ -19,7 +19,7 @@ type DBStructure struct {
 func NewDB(path string) (*DB, error) {
 	db := &DB{
 		path: path,
-		mu: &sync.RWMutex{},
+		mu:   &sync.RWMutex{},
 	}
 	err := db.ensureDB()
 	return db, err
@@ -33,7 +33,7 @@ func (db *DB) CreateChirp(body string) (Chirp, error) {
 
 	id := len(dbStructure.Chirps) + 1
 	chirp := Chirp{
-		Id: id,
+		ID:   id,
 		Body: body,
 	}
 
