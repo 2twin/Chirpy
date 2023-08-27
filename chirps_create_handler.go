@@ -9,7 +9,7 @@ import (
 
 type Chirp struct {
 	Body string `json:"body"`
-	Id   int    `json:"id"`
+	ID   int    `json:"id"`
 }
 
 func (cfg *apiConfig) createChirpsHandler(w http.ResponseWriter, r *http.Request) {
@@ -39,7 +39,7 @@ func (cfg *apiConfig) createChirpsHandler(w http.ResponseWriter, r *http.Request
 	}
 
 	respondeWithJson(w, http.StatusCreated, Chirp{
-		Id: chirp.Id,
+		ID: chirp.ID,
 		Body: chirp.Body,
 	})
 }
