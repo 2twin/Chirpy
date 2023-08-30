@@ -1,6 +1,7 @@
 package main
 
 import (
+	"flag"
 	"log"
 	"net/http"
 
@@ -38,6 +39,7 @@ func main() {
 	apiRouter.Get("/chirps", apiCfg.retrieveChirpsHandler)
 	apiRouter.Post("/chirps", apiCfg.createChirpsHandler)
 	apiRouter.Get("/chirps/{chirpID}", apiCfg.getChirpHandler)
+	apiRouter.Post("/users", apiCfg.createUserHandler)
 	router.Mount("/api", apiRouter)
 
 	adminRouter := chi.NewRouter()
@@ -53,4 +55,7 @@ func main() {
 
 	log.Printf("Serving files from %s on port: %s\n", rootDir, port)
 	log.Fatal(srv.ListenAndServe())
+
+	flag.Bool("debug", false, "Enable debug mode")
+	flag.Parse()
 }
