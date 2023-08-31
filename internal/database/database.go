@@ -15,7 +15,7 @@ type Chirp struct {
 type User struct {
 	Email    string `json:"email"`
 	ID       int    `json:"id"`
-	Password string
+	Password string `json:"password"`
 }
 
 type DB struct {
@@ -95,6 +95,13 @@ func (db *DB) CreateUser(password string, email string) (User, error) {
 		return User{}, err
 	}
 
+	// проверка есть ли такой email уже
+	for _, user := range dbStructure.Users {
+		if email == user.Email {
+			return User{}, errors.New("User with the same email already exists!")
+		}
+	}
+
 	id := len(dbStructure.Users) + 1
 	user := User{
 		ID:       id,
@@ -110,6 +117,23 @@ func (db *DB) CreateUser(password string, email string) (User, error) {
 	}
 
 	return user, nil
+}
+
+func (db *DB) EnsureUser(email string) (User, error) {
+	dbStructure, err := db.loadDB()
+	if err != nil {
+		return User{}, err
+	}
+
+	var foundUser User
+
+	for _, user := range dbStructure.Users {
+		if user.Email == email {
+			foundUser = user
+		}
+	}
+
+	return foundUser, nil
 }
 
 func (db *DB) createDB() error {
