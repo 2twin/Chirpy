@@ -8,11 +8,11 @@ import (
 )
 
 type Chirp struct {
-	Body string `json:"body"`
 	ID   int    `json:"id"`
+	Body string `json:"body"`
 }
 
-func (cfg *apiConfig) createChirpsHandler(w http.ResponseWriter, r *http.Request) {
+func (cfg *apiConfig) handlerChirpsCreate(w http.ResponseWriter, r *http.Request) {
 	type parameters struct {
 		Body string `json:"body"`
 	}
@@ -20,7 +20,6 @@ func (cfg *apiConfig) createChirpsHandler(w http.ResponseWriter, r *http.Request
 	decoder := json.NewDecoder(r.Body)
 	params := parameters{}
 	err := decoder.Decode(&params)
-
 	if err != nil {
 		respondWithError(w, http.StatusInternalServerError, "Couldn't decode parameters")
 		return
@@ -38,8 +37,8 @@ func (cfg *apiConfig) createChirpsHandler(w http.ResponseWriter, r *http.Request
 		return
 	}
 
-	respondeWithJson(w, http.StatusCreated, Chirp{
-		ID: chirp.ID,
+	respondWithJSON(w, http.StatusCreated, Chirp{
+		ID:   chirp.ID,
 		Body: chirp.Body,
 	})
 }
@@ -55,22 +54,18 @@ func validateChirp(body string) (string, error) {
 		"sharbert":  {},
 		"fornax":    {},
 	}
-
 	cleaned := getCleanedBody(body, badWords)
-
 	return cleaned, nil
 }
 
 func getCleanedBody(body string, badWords map[string]struct{}) string {
-	const separator string = " "
-
-	words := strings.Split(body, separator)
+	words := strings.Split(body, " ")
 	for i, word := range words {
-		lowerWord := strings.ToLower(word)
-		if _, ok := badWords[lowerWord]; ok {
+		loweredWord := strings.ToLower(word)
+		if _, ok := badWords[loweredWord]; ok {
 			words[i] = "****"
 		}
 	}
-	cleaned := strings.Join(words, separator)
+	cleaned := strings.Join(words, " ")
 	return cleaned
 }
