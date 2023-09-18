@@ -6,6 +6,7 @@ type User struct {
 	ID             int    `json:"id"`
 	Email          string `json:"email"`
 	HashedPassword string `json:"hashed_password"`
+	IsChirpyRed    bool   `json:"is_chirpy_red"`
 }
 
 var ErrAlreadyExists = errors.New("already exists")
