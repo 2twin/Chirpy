@@ -15,6 +15,7 @@ type apiConfig struct {
 	fileserverHits int
 	DB             *database.DB
 	jwtSecret      string
+	polkaKey    string
 }
 
 func main() {
@@ -26,6 +27,11 @@ func main() {
 	jwtSecret := os.Getenv("JWT_SECRET")
 	if jwtSecret == "" {
 		log.Fatal("JWT_SECRET environment variable is not set")
+	}
+
+	polkaKey := os.Getenv("POLKA_API_KEY")
+	if polkaKey == "" {
+		log.Fatal("POLKA_API_KEY environment variable is not set")
 	}
 
 	db, err := database.NewDB("database.json")
@@ -46,6 +52,7 @@ func main() {
 		fileserverHits: 0,
 		DB:             db,
 		jwtSecret:      jwtSecret,
+		polkaKey:    polkaKey,
 	}
 
 	router := chi.NewRouter()
@@ -67,8 +74,9 @@ func main() {
 	apiRouter.Post("/chirps", apiCfg.handlerChirpsCreate)
 	apiRouter.Get("/chirps", apiCfg.handlerChirpsRetrieve)
 	apiRouter.Get("/chirps/{chirpID}", apiCfg.handlerChirpsGet)
-
 	apiRouter.Delete("/chirps/{chirpID}", apiCfg.handlerChirpsDelete)
+
+	apiRouter.Post("/polka/webhooks", apiCfg.UpgradeUser)
 
 	router.Mount("/api", apiRouter)
 

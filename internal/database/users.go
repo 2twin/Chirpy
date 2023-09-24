@@ -26,6 +26,7 @@ func (db *DB) CreateUser(email, hashedPassword string) (User, error) {
 		ID:             id,
 		Email:          email,
 		HashedPassword: hashedPassword,
+		IsChirpyRed:    false,
 	}
 	dbStructure.Users[id] = user
 
@@ -87,4 +88,26 @@ func (db *DB) UpdateUser(id int, email, hashedPassword string) (User, error) {
 	}
 
 	return user, nil
+}
+
+func (db *DB) UpgradeUser(id int) error {
+	dbStructure, err := db.loadDB()
+	if err != nil {
+		return err
+	}
+
+	user, ok := dbStructure.Users[id]
+	if !ok {
+		return ErrNotExist
+	}
+
+	user.IsChirpyRed = true
+	dbStructure.Users[id] = user
+
+	err = db.writeDB(dbStructure)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
